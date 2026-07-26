@@ -59,5 +59,6 @@ create-context-hygiene/
 9. [ ] [`09-golden-test.md`](tasks/09-golden-test.md) — reproducibility test.
 10. [ ] [`10-assisted-reorg.md`](tasks/10-assisted-reorg.md) — LLM-assisted CLAUDE.md → kernel/skill/reference split (later).
 11. [ ] [`11-rollout-real-targets.md`](tasks/11-rollout-real-targets.md) — install into ai-builder, second-brain, captains-log (later).
+12. [ ] [`12-claude-md-first-and-skill-handoff.md`](tasks/12-claude-md-first-and-skill-handoff.md) — CLAUDE.md as the priority target + handoff to create-project-system's task-system skill. Builds on 03/04/05/10.
 
 Mark a task `[x]` here when its task file's checklist is fully done.
