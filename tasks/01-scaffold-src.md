@@ -1,12 +1,12 @@
 # Task 01 — Scaffold `src/` + copy the generator substrate
 
 **Goal:** stand up the shippable layout and reuse the emit-into-target machinery
-from `create-task-system` (copied, not shared-lib — design §7).
+from `create-project-system` (copied, not shared-lib — design §7).
 
 ## Steps
 
 - [ ] Create `src/` with: `checkers/`, `config/`, `docs/`, `skill/`, `hooks/`.
-- [ ] Copy the substrate from `../create-task-system` and strip task-specific
+- [ ] Copy the substrate from `../create-project-system` and strip task-specific
       logic: flag parsing, `--target-repo` handling, config rendering from a
       `.in` template, `git rev-parse --show-toplevel` root resolution (with the
       worktree-aware fallback), the golden-test harness, the in-repo `sandbox/`

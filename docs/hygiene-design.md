@@ -1,12 +1,12 @@
 # Design — Context-Hygiene Generator
 
-**Goal:** `create-context-hygiene` is a **generator** (peer of `create-task-system`)
+**Goal:** `create-context-hygiene` is a **generator** (peer of `create-project-system`)
 that installs a context-hygiene toolkit into any target repo. The toolkit keeps
 agent-facing instruction files (`CLAUDE.md`, imported docs, skills, memory index)
 **small** (size) and **well-placed** (relevance), and can help **clean and
 organize** a repo whose instructions have already ballooned.
 
-**Relationship to `create-task-system`:** orthogonal peers over the same
+**Relationship to `create-project-system`:** orthogonal peers over the same
 generator substrate. The task system is one *producer* of agent-facing context;
 the hygienist is the broader concern that *measures and polices* it. They compose
 at the target — install both and the hygienist keeps the task system's own skill
@@ -152,7 +152,7 @@ part ships first:
 
 ## 7. Generator architecture
 
-Shares the substrate with `create-task-system` — **copied, not shared-lib** (two
+Shares the substrate with `create-project-system` — **copied, not shared-lib** (two
 consumers don't justify a shared dependency yet; promote later if a third module
 appears).
 

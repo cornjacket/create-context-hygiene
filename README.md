@@ -32,7 +32,7 @@ Design + plan stage. See:
 
 ## Related
 
-- [`create-task-system`](../create-task-system) — an orthogonal peer generator
+- [`create-project-system`](../create-project-system) — an orthogonal peer generator
   (installs a Markdown task subsystem). This repo copies its generator substrate;
   the two compose at a target — the hygienist measures the kind of instruction
   content the task system emits.

@@ -9,7 +9,7 @@ fixtures.
 
 - [ ] **ai-builder** — the motivating case (bloated CLAUDE.md). Install checkers +
       hooks; run budget/lint; use the report to drive the CLAUDE.md → kernel/skill
-      split (pairs with `create-task-system` task 03b, which extracts the task
+      split (pairs with `create-project-system` task 03b, which extracts the task
       skill). Test under both git layouts (ai-builder is a worktree).
 - [ ] **second-brain** — already uses a pre-commit size hook; reconcile: replace
       or complement it with the token-based budget checker. Confirm before
@@ -28,4 +28,4 @@ fixtures.
 Each target has the toolkit installed, budgets enforced in CI, and its generation
 command recorded.
 
-Ref: `docs/hygiene-design.md`; composes with `create-task-system`.
+Ref: `docs/hygiene-design.md`; composes with `create-project-system`.

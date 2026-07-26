@@ -10,14 +10,14 @@ able to **clean and organize** repos whose instructions have ballooned.
 "how" for token budgeting, per-section/total-manifest budgets, `context-lint`,
 the placement rubric, the LLM audit, and the generator contract.
 
-**Peer, not parent:** orthogonal to `create-task-system` over a shared generator
+**Peer, not parent:** orthogonal to `create-project-system` over a shared generator
 substrate (copied, not shared-lib — see design §7). The two compose at a target
 but neither depends on the other *at runtime*.
 
 **Cross-repo build ordering:** there IS a one-time *build* dependency —
 task 01 copies the generator substrate (`generate.sh`, root resolution, golden
-harness, `sandbox/` self-test) **from `create-task-system`**. So build
-`create-task-system`'s substrate first (its tasks 01, 04, 04b), then start here.
+harness, `sandbox/` self-test) **from `create-project-system`**. So build
+`create-project-system`'s substrate first (its tasks 01, 04, 04b), then start here.
 This is a copy-once dependency, not a runtime one; promote to a shared lib only if
 a third generator appears.
 
@@ -48,7 +48,7 @@ create-context-hygiene/
 
 ## Tasks (in order)
 
-1. [ ] [`01-scaffold-src.md`](tasks/01-scaffold-src.md) — `src/` layout + copy the generator substrate from `create-task-system`.
+1. [ ] [`01-scaffold-src.md`](tasks/01-scaffold-src.md) — `src/` layout + copy the generator substrate from `create-project-system`.
 2. [ ] [`02-token-counter.md`](tasks/02-token-counter.md) — pluggable token counter (heuristic / tiktoken / anthropic).
 3. [ ] [`03-budget-checker.md`](tasks/03-budget-checker.md) — per-file, per-section, and total-manifest budgets + `.context-budget.toml`.
 4. [ ] [`04-context-lint.md`](tasks/04-context-lint.md) — procedural-smell detector.
