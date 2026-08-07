@@ -170,6 +170,26 @@ create-context-hygiene/
     docs/                    # this design
 ```
 
+### 7.1 The checkers are Python; the emitter is bash
+
+Decided in task 01, recorded here because it is the kind of choice that gets
+re-litigated. The emitter stays **bash** — it copies files and substitutes
+tokens, which is all `create-project-system`'s substrate does, and matching it
+keeps the two generators readable as one family. The checkers are **Python 3**,
+standard library only:
+
+- Tokenizing, markdown section parsing, and JSON output are all substantially
+  easier than in bash, and the token counter has to swap backends behind one
+  interface.
+- The optional accurate counters are Python packages (`tiktoken`, `anthropic`),
+  so the alternative would be shelling out to Python anyway.
+- `tomllib` is stdlib on 3.11+; older interpreters fall back to a small parser
+  for the narrow schema this generator writes, so a target needs **no
+  dependencies at all** to run the default path.
+
+Zero-dependency matters more than it looks: the pre-commit hook must work on a
+fresh clone with no install step, or it is not a guard.
+
 **`generate.sh` contract (proposed):**
 
 ```sh

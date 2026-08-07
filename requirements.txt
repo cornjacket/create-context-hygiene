@@ -1,0 +1,14 @@
+# The checkers run on the Python standard library alone. Everything here is
+# optional and only buys a more accurate token count — see the `counter` key in
+# .context-budget.toml.
+#
+#   heuristic (default)  no dependencies at all
+#   tiktoken             pip install tiktoken     — local BPE, closer than chars/4
+#   anthropic            pip install anthropic    — exact, needs ANTHROPIC_API_KEY
+#
+# Install with:  pip install -r requirements.txt
+# TOML parsing uses the stdlib `tomllib` on Python 3.11+; older interpreters
+# fall back to a small built-in parser, so there is no dependency there either.
+
+tiktoken>=0.7 ; python_version >= "3.9"
+anthropic>=0.40
