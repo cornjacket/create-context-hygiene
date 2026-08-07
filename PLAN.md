@@ -60,5 +60,6 @@ create-context-hygiene/
 10. [ ] [`10-assisted-reorg.md`](tasks/10-assisted-reorg.md) — LLM-assisted CLAUDE.md → kernel/skill/reference split (later).
 11. [ ] [`11-rollout-real-targets.md`](tasks/11-rollout-real-targets.md) — install into ai-builder, second-brain, captains-log (later).
 12. [ ] [`12-claude-md-first-and-skill-handoff.md`](tasks/12-claude-md-first-and-skill-handoff.md) — CLAUDE.md as the priority target + handoff to create-project-system's task-system skill. Builds on 03/04/05/10.
+13. [ ] [`13-ci-is-the-authority.md`](tasks/13-ci-is-the-authority.md) — CI is the gate, so it cannot be opt-in: flip `--install-hooks` to default-on with an opt-out, define what the workflow actually runs and how it fails, and declare the check in whatever single manifest `create-project-system` `28` and the `mail` effort settle on. The pre-commit hook is bypassable with `--no-verify`, so it can only ever be the warning. Builds on 03/04/06.
 
 Mark a task `[x]` here when its task file's checklist is fully done.
