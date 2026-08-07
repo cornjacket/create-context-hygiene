@@ -21,6 +21,35 @@ generate.sh --target-repo <path> [--counter heuristic|tiktoken|anthropic] \
     [--with-lint] [--with-audit-skill] [--install-hooks]
 ```
 
+## What it declares — `discovery.json`
+
+An install also writes its key into **`discovery.json`** at the target repo root:
+one file, one fixed name, listing what this repo offers to the outside. A
+containing workspace reads it to learn which of its repos are covered, instead of
+looking inside each one for a `.context-hygiene/` directory.
+
+This generator owns **one key** and never touches the rest of the file:
+
+```json
+{
+  "context-hygiene": {
+    "version": 1,
+    "checkers": ".context-hygiene",
+    "budgets": ".context-budget.toml",
+    "ci": true
+  }
+}
+```
+
+`ci` is the one a workspace actually cares about: it separates *"checked on every
+push"* from *"installed but nothing enforces it"*, which look identical from the
+outside otherwise.
+
+Other generators write their own keys into the same file — `create-project-system`
+owns `tasks` and `inbox`. The rules: **a generator owns its key and never
+rewrites another's**, and the version is **per key**, since different generators
+write at different times. See [`tasks/13`](tasks/13-ci-is-the-authority.md).
+
 ## Status
 
 Design + plan stage. See:

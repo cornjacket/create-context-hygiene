@@ -53,18 +53,50 @@ thing degrades to a linter you run when you already suspect a problem.
   you fail". Decide whether the warning is annotation-only or a soft-fail, and
   make sure a warning cannot be mistaken for a pass.
 
-## Advertise the check
+## Advertise the check — the `context-hygiene` key in `discovery.json`
 
-A repo carrying this toolkit should be able to say so in machine-readable form,
-so a containing workspace can ask which of its repos are covered instead of
-probing each one for a directory.
+A repo carrying this toolkit says so in **`discovery.json`** at its root, so a
+containing workspace can ask which of its repos are covered instead of looking
+inside each one for a `.context-hygiene/` directory.
 
-This is the same problem `create-project-system` task `28` solves for the task
-system's mount, and `create-git-workspace`'s `mail` effort solves for an inbox.
-**Do not invent a third file.** Whatever single manifest those two settle on,
-write a `context-hygiene` key into it: the checker's path, the limits file, and
-whether CI is wired. Coordinate before building — three generators each inventing
-their own declaration is exactly the probing this was meant to end.
+This generator owns exactly one key:
+
+```json
+{
+  "context-hygiene": {
+    "version": 1,
+    "checkers": ".context-hygiene",
+    "budgets": ".context-budget.toml",
+    "ci": true
+  }
+}
+```
+
+`ci` is the field that matters to a workspace: *"checked on every push"* and
+*"installed but nothing enforces it"* are indistinguishable from outside without
+it, and after this task the second state should be rare enough to be worth
+naming when it happens.
+
+**The file is shared, and that is the whole point.** `create-project-system`
+task `28` writes `tasks` and `inbox` into the same file. One capability file per
+generator would leave a consumer probing for `inbox.json`, then
+`context-hygiene.json`, then the next — the same probing all of this exists to
+end, moved up one level.
+
+Two rules follow, and both must hold or the generators corrupt each other:
+
+- **Own your key, never the file.** Read the existing `discovery.json`, set only
+  `context-hygiene`, write it back. Writing the file wholesale erases whatever
+  ran before, and nothing notices until a consumer asks for a missing key.
+- **Version per key.** One file-level version cannot stay true when two
+  generators write at different times on different release schedules.
+
+**Agree the filename and the merge rule with `create-project-system` task `28`
+before either writes code.** Two generators disagreeing about the name of a file
+they both write is a silent, mutual overwrite.
+
+Assert it: install this toolkit over a repo that already carries a foreign key,
+and check the foreign key survives.
 
 ## Done when
 
@@ -72,7 +104,10 @@ their own declaration is exactly the probing this was meant to end.
   an over-budget instruction file, with the numbers in the output, without any
   extra flag.
 - A target with no CI provider is told so at install time.
-- The manifest key is written, and a consumer can tell "checked" from
-  "not installed" without looking for a directory.
+- The `context-hygiene` key is written into `discovery.json`, and a consumer can
+  tell "checked on push" from "installed, unenforced" from "not installed" —
+  without looking for a directory.
+- Installing over a repo that already carries `tasks`/`inbox` keys leaves them
+  intact.
 
 Ref: `docs/hygiene-design.md` §2.4, §7. Builds on `03`, `04`, `06`.
