@@ -61,7 +61,7 @@ hook, and `.github/workflows/context-hygiene.yml`.
 4. [x] [`04-context-lint.md`](tasks/04-context-lint.md) — procedural-smell detector.
 5. [x] [`05-rubric-and-audit.md`](tasks/05-rubric-and-audit.md) — `PLACEMENT.md` rubric + optional LLM audit skill.
 6. [x] [`06-build-generate-sh.md`](tasks/06-build-generate-sh.md) — `generate.sh` + pre-commit/CI wiring.
-7. [ ] [`07-self-test-sandbox.md`](tasks/07-self-test-sandbox.md) — self-test into a disposable in-repo `sandbox/`.
+7. [x] [`07-self-test-sandbox.md`](tasks/07-self-test-sandbox.md) — self-test into a disposable in-repo `sandbox/`. *41 assertions, both git layouts.*
 8. [ ] [`08-dirty-fixture-repos.md`](tasks/08-dirty-fixture-repos.md) — sandboxed bloated test repos the generator cleans & organizes.
 9. [ ] [`09-golden-test.md`](tasks/09-golden-test.md) — reproducibility test.
 10. [ ] [`10-assisted-reorg.md`](tasks/10-assisted-reorg.md) — LLM-assisted CLAUDE.md → kernel/skill/reference split (later).
@@ -82,3 +82,31 @@ The first real reading, from `create-ai-builder`'s `CLAUDE.md`: **6,576 tokens
 loaded every turn**, 542 lines, with a single `### Summary` section at 1,531 of
 them. That is the motivating case in design §6 with a number attached, and it is
 the target for task 11.
+
+## Sequence from here
+
+The numbered list above is the *build* order, and it is no longer the order to
+work in. Three things moved:
+
+1. ~~**07 — self-test.**~~ Done. It automates the checks that were run by hand
+   to close 06, which is what makes everything after it safe to move quickly on.
+2. **08 → 10 — dirty fixtures, then the assisted split.** Next. 08 gives 10 something
+   to reorganize, and 10 is what turns a report into a diff a person can accept.
+   This pair is the remaining substance of the project.
+3. **11 — rollout.** Gated on 10. The number that justifies it already exists
+   (6,576 tokens); what does not exist is tooling to do the split, and doing
+   ai-builder by hand would prove nothing about the generator.
+
+Two adjustments to the list itself:
+
+- **09 is roughly half done.** `tests/run.sh` already covers the emitted-tree
+  fixtures, drift detection, the pinned `heuristic` counter, and the refresh
+  procedure. What remains is golden **report** fixtures (`--json`), which need
+  task 08's dirty repos to exist. 09 is now a step of 08, not a task beside it.
+- **13 has a lead time and should start in parallel, not in order.** It requires
+  agreeing the `discovery.json` filename and merge rule with
+  `create-project-system` task 28 *before either writes code* — that is a
+  conversation in another repo, and it blocks 13 regardless of what gets built
+  here. 13 also has two decisions already made under it during task 06 (the hook
+  is pinned to an offline counter; `lint.warn_only` ships true) which it should
+  ratify or overturn rather than rediscover.
