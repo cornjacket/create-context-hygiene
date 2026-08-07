@@ -1,0 +1,60 @@
+# .context-budget.toml — the always-on context manifest.
+#
+# This file is YOURS. The generator seeds it once from the counts this repo had
+# at install time and never rewrites it; the checkers in .context-hygiene/ are
+# regenerated freely, this is not.
+#
+# The unit is TOKENS LOADED PER TURN, not lines. A table or a fenced block costs
+# far more than its line count suggests, which is why nothing here counts lines.
+
+[budget]
+
+# heuristic | tiktoken | anthropic
+#   heuristic  zero-dependency chars/4 (denser inside fenced code). Fast enough
+#              for a pre-commit hook, approximate by ~10-15%.
+#   tiktoken   local BPE; closer, needs the tiktoken package.
+#   anthropic  messages.count_tokens — exact, needs network + ANTHROPIC_API_KEY.
+#
+# Because the offline tiers approximate, the budgets below carry headroom. Do
+# not raise them to the true ceiling: an approximation that reads low is a check
+# that silently passes an over-budget file.
+counter       = "{{COUNTER}}"
+model         = "{{MODEL}}"
+
+# Warn at warn_pct of a limit, fail at fail_pct. Only a fail exits non-zero, so
+# there is runway before a hard stop.
+warn_pct      = 80
+fail_pct      = 100
+
+# The number that actually matters: every always-on file summed. This is the tax
+# paid on every turn whether or not the turn needs any of it. `@path` imports are
+# discovered automatically and counted here even though no entry names them.
+total_ceiling = {{TOTAL_CEILING}}
+
+# Default per-section ceiling; an entry may override it. A file can pass its own
+# total while one section balloons, which is the usual way a kernel rots.
+max_section   = {{MAX_SECTION}}
+
+# --- The always-on set -------------------------------------------------------
+# One entry per file loaded on every turn. Budgets were seeded from this repo's
+# counts at install time, so they describe today rather than the target —
+# ratchet them down as content moves into skills and reference docs.
+{{ALWAYS_ON_ENTRIES}}
+
+# --- context-lint thresholds -------------------------------------------------
+# Shape rules for content that belongs in a skill or a reference doc rather than
+# an always-on file. See docs/PLACEMENT.md for what each bucket means.
+[lint]
+
+# Starts true, deliberately. On the day this is installed the findings are all
+# pre-existing, and a check that blocks every commit from the moment it appears
+# gets switched off rather than acted on. Size is mechanical and gates from day
+# one (above); placement is judgement, so it reports until you have worked
+# through the backlog. Flip this to false to make it a gate — and do flip it,
+# or the findings become wallpaper.
+warn_only              = true
+code_block             = true    # a fenced block  -> skill | reference
+max_ordered_list_items = 5       # a longer step list -> skill
+max_table_rows         = 6       # a wider table   -> reference
+max_shell_lines        = 3       # a longer command run -> skill
+max_section_tokens     = 0       # 0 = inherit [budget] max_section
