@@ -12,14 +12,37 @@ tokens via a pluggable counter (heuristic default, `tiktoken` optional,
 
 ## What it emits
 
-Into `<target-repo>/.context-hygiene/`: the checkers (`count_tokens`,
-`check_budget`, `context_lint`), a seeded `.context-budget.toml` manifest, a
-`PLACEMENT.md` rubric, optional audit skill, and pre-commit + CI wiring.
-
 ```sh
 generate.sh --target-repo <path> [--counter heuristic|tiktoken|anthropic] \
-    [--with-lint] [--with-audit-skill] [--install-hooks]
+    [--with-lint | --no-lint] [--with-audit-skill] [--install-hooks] [--force]
 ```
+
+| Path in the target | What it is |
+|---|---|
+| `.context-hygiene/` | the checkers — `count_tokens`, `check_budget`, `context_lint` |
+| `.context-budget.toml` | the always-on manifest, **seeded from the target's own counts** so the budgets start realistic |
+| `docs/PLACEMENT.md` | the three-bucket rubric the lint enforces |
+| `.claude/skills/context-audit/` | the periodic LLM audit (`--with-audit-skill`) |
+| `pre-commit` + `.github/workflows/` | enforcement (`--install-hooks`) |
+
+The checkers are **vendored, not depended on**: a fresh clone runs them with no
+install step, on the standard library alone. `tiktoken` and `anthropic` are
+optional and only buy a more accurate count.
+
+Machinery is always overwritten and your `.context-budget.toml` never is, so
+re-running the generator over a live install is a zero-line diff — upgrading
+does not need `--force`.
+
+## Where enforcement sits
+
+The pre-commit hook uses an offline counter and runs in milliseconds, so it
+costs nothing and needs no key — but `git commit --no-verify` is one flag, which
+makes it the fast warning rather than the gate. CI runs the same checks with the
+counter the target chose, and is the thing that actually holds the line.
+
+Size gates from day one; placement starts as a report (`lint.warn_only = true`).
+On install day every placement finding is pre-existing, and a check that blocks
+the first commit gets switched off rather than acted on.
 
 ## What it declares — `discovery.json`
 
@@ -52,7 +75,16 @@ write at different times. See [`tasks/13`](tasks/13-ci-is-the-authority.md).
 
 ## Status
 
-Design + plan stage. See:
+The toolkit works end to end: it installs, measures, lints, and gates
+(`tasks/01`–`06`). Not yet built: the disposable self-test (`07`), the bloated
+fixture repos (`08`), the assisted `CLAUDE.md` split (`10`), and rollout to real
+targets (`11`).
+
+First real reading — `create-ai-builder`'s `CLAUDE.md` is **6,576 tokens loaded
+on every turn**, one section of which is 1,531. That is the case this repo was
+built for.
+
+See:
 - [`PLAN.md`](PLAN.md) — the build plan and ordered task list.
 - [`docs/hygiene-design.md`](docs/hygiene-design.md) — the "how" for token
   budgeting, per-section/total-manifest budgets, the lint, the rubric, the audit,

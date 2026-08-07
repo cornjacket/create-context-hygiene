@@ -33,27 +33,34 @@ optional, `anthropic` exact) — design §2.
 create-context-hygiene/
     PLAN.md                 ← this file
     generate.sh             ← the emitter (task 06)
+    requirements.txt        ← optional counter deps; the default path needs none
     src/
-        checkers/           ← count-tokens, check-budget, context-lint (tasks 02–04)
+        checkers/           ← hygiene_env, count_tokens, check_budget, context_lint
         config/.context-budget.toml.in
         docs/PLACEMENT.md   ← placement rubric (task 05)
         skill/context-audit/SKILL.md   ← optional LLM audit (task 05)
-        hooks/pre-commit.in + CI template (task 06)
+        hooks/pre-commit.in + context-hygiene.yml.in (task 06)
+    tests/run.sh + tests/golden/   ← reproducibility test (harness from task 01)
     sandbox/                ← disposable self-test target (git-ignored, task 07)
     tasks/                  ← build work-items (this plan)
     docs/                   ← design docs
 ```
 
+**What a target gets:** `.context-hygiene/` (the checkers, vendored so a fresh
+clone works with no install step), a seeded `.context-budget.toml`, and
+`docs/PLACEMENT.md`. Optionally `.claude/skills/context-audit/`, a `pre-commit`
+hook, and `.github/workflows/context-hygiene.yml`.
+
 ---
 
 ## Tasks (in order)
 
-1. [ ] [`01-scaffold-src.md`](tasks/01-scaffold-src.md) — `src/` layout + copy the generator substrate from `create-project-system`.
-2. [ ] [`02-token-counter.md`](tasks/02-token-counter.md) — pluggable token counter (heuristic / tiktoken / anthropic).
-3. [ ] [`03-budget-checker.md`](tasks/03-budget-checker.md) — per-file, per-section, and total-manifest budgets + `.context-budget.toml`.
-4. [ ] [`04-context-lint.md`](tasks/04-context-lint.md) — procedural-smell detector.
-5. [ ] [`05-rubric-and-audit.md`](tasks/05-rubric-and-audit.md) — `PLACEMENT.md` rubric + optional LLM audit skill.
-6. [ ] [`06-build-generate-sh.md`](tasks/06-build-generate-sh.md) — `generate.sh` + pre-commit/CI wiring.
+1. [x] [`01-scaffold-src.md`](tasks/01-scaffold-src.md) — `src/` layout + copy the generator substrate from `create-project-system`.
+2. [x] [`02-token-counter.md`](tasks/02-token-counter.md) — pluggable token counter (heuristic / tiktoken / anthropic). *One step open: the calibration run needs an API key — see the task file.*
+3. [x] [`03-budget-checker.md`](tasks/03-budget-checker.md) — per-file, per-section, and total-manifest budgets + `.context-budget.toml`.
+4. [x] [`04-context-lint.md`](tasks/04-context-lint.md) — procedural-smell detector.
+5. [x] [`05-rubric-and-audit.md`](tasks/05-rubric-and-audit.md) — `PLACEMENT.md` rubric + optional LLM audit skill.
+6. [x] [`06-build-generate-sh.md`](tasks/06-build-generate-sh.md) — `generate.sh` + pre-commit/CI wiring.
 7. [ ] [`07-self-test-sandbox.md`](tasks/07-self-test-sandbox.md) — self-test into a disposable in-repo `sandbox/`.
 8. [ ] [`08-dirty-fixture-repos.md`](tasks/08-dirty-fixture-repos.md) — sandboxed bloated test repos the generator cleans & organizes.
 9. [ ] [`09-golden-test.md`](tasks/09-golden-test.md) — reproducibility test.
@@ -63,3 +70,15 @@ create-context-hygiene/
 13. [ ] [`13-ci-is-the-authority.md`](tasks/13-ci-is-the-authority.md) — CI is the gate, so it cannot be opt-in: flip `--install-hooks` to default-on with an opt-out, define what the workflow actually runs and how it fails, and declare the check in whatever single manifest `create-project-system` `28` and the `mail` effort settle on. The pre-commit hook is bypassable with `--no-verify`, so it can only ever be the warning. Builds on 03/04/06.
 
 Mark a task `[x]` here when its task file's checklist is fully done.
+
+## Where this stands
+
+Tasks 01–06 are built: the toolkit installs, measures, lints, and gates. What is
+not yet done is everything that proves it holds up — the disposable self-test
+(07), the deliberately bloated fixture repos (08), and the assisted
+reorganization that turns a report into a diff (10).
+
+The first real reading, from `create-ai-builder`'s `CLAUDE.md`: **6,576 tokens
+loaded every turn**, 542 lines, with a single `### Summary` section at 1,531 of
+them. That is the motivating case in design §6 with a number attached, and it is
+the target for task 11.
