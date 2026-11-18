@@ -33,6 +33,10 @@ Machinery is always overwritten and your `.context-budget.toml` never is, so
 re-running the generator over a live install is a zero-line diff — upgrading
 does not need `--force`.
 
+**Known limitation:** `generate.sh` decides a file is its own if the file
+contains the string `create-context-hygiene` (`ours()`). A hand-written
+`docs/PLACEMENT.md` that contains that string is overwritten without a warning.
+
 ## Where enforcement sits
 
 The pre-commit hook uses an offline counter and runs in milliseconds, so it

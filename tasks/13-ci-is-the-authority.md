@@ -95,6 +95,14 @@ Two rules follow, and both must hold or the generators corrupt each other:
 before either writes code.** Two generators disagreeing about the name of a file
 they both write is a silent, mutual overwrite.
 
+**The merge rule is now settled at the workspace** (task `229ccb-0000` in
+`dev-workspace`). A generator that writes `discovery.json` must:
+
+1. Read the existing file.
+2. Change only the key it owns (`context-hygiene` here).
+3. Keep every other key as it is.
+4. Stop with an error if the file is malformed. Do not overwrite it.
+
 Assert it: install this toolkit over a repo that already carries a foreign key,
 and check the foreign key survives.
 

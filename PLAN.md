@@ -56,27 +56,26 @@ hook, and `.github/workflows/context-hygiene.yml`.
 ## Tasks (in order)
 
 1. [x] [`01-scaffold-src.md`](tasks/01-scaffold-src.md) — `src/` layout + copy the generator substrate from `create-project-system`.
-2. [x] [`02-token-counter.md`](tasks/02-token-counter.md) — pluggable token counter (heuristic / tiktoken / anthropic). *One step open: the calibration run needs an API key — see the task file.*
+2. [x] [`02-token-counter.md`](tasks/02-token-counter.md) — pluggable token counter (heuristic / tiktoken / anthropic). *One step open: the calibration run needs an API key — see the task file.* **Calibration deferred until the pilot (14) reports.**
 3. [x] [`03-budget-checker.md`](tasks/03-budget-checker.md) — per-file, per-section, and total-manifest budgets + `.context-budget.toml`.
 4. [x] [`04-context-lint.md`](tasks/04-context-lint.md) — procedural-smell detector.
 5. [x] [`05-rubric-and-audit.md`](tasks/05-rubric-and-audit.md) — `PLACEMENT.md` rubric + optional LLM audit skill.
 6. [x] [`06-build-generate-sh.md`](tasks/06-build-generate-sh.md) — `generate.sh` + pre-commit/CI wiring.
 7. [x] [`07-self-test-sandbox.md`](tasks/07-self-test-sandbox.md) — self-test into a disposable in-repo `sandbox/`. *41 assertions, both git layouts.*
-8. [ ] [`08-dirty-fixture-repos.md`](tasks/08-dirty-fixture-repos.md) — sandboxed bloated test repos the generator cleans & organizes.
-9. [ ] [`09-golden-test.md`](tasks/09-golden-test.md) — reproducibility test.
-10. [ ] [`10-assisted-reorg.md`](tasks/10-assisted-reorg.md) — LLM-assisted CLAUDE.md → kernel/skill/reference split (later).
-11. [ ] [`11-rollout-real-targets.md`](tasks/11-rollout-real-targets.md) — install into ai-builder, second-brain, captains-log (later).
-12. [ ] [`12-claude-md-first-and-skill-handoff.md`](tasks/12-claude-md-first-and-skill-handoff.md) — CLAUDE.md as the priority target + handoff to create-project-system's task-system skill. Builds on 03/04/05/10.
-13. [ ] [`13-ci-is-the-authority.md`](tasks/13-ci-is-the-authority.md) — CI is the gate, so it cannot be opt-in: flip `--install-hooks` to default-on with an opt-out, define what the workflow actually runs and how it fails, and declare the check in whatever single manifest `create-project-system` `28` and the `mail` effort settle on. The pre-commit hook is bypassable with `--no-verify`, so it can only ever be the warning. Builds on 03/04/06.
+8. [ ] **Deferred until the pilot (14) reports.** [`08-dirty-fixture-repos.md`](tasks/08-dirty-fixture-repos.md) — sandboxed bloated test repos the generator cleans & organizes.
+9. [ ] **Deferred until the pilot (14) reports.** [`09-golden-test.md`](tasks/09-golden-test.md) — reproducibility test.
+10. [ ] **Deferred until the pilot (14) reports.** [`10-assisted-reorg.md`](tasks/10-assisted-reorg.md) — LLM-assisted CLAUDE.md → kernel/skill/reference split (later).
+11. [ ] **Deferred until the pilot (14) reports.** [`11-rollout-real-targets.md`](tasks/11-rollout-real-targets.md) — install into ai-builder, second-brain, captains-log (later).
+12. [ ] **Deferred until the pilot (14) reports.** [`12-claude-md-first-and-skill-handoff.md`](tasks/12-claude-md-first-and-skill-handoff.md) — CLAUDE.md as the priority target + handoff to create-project-system's task-system skill. Builds on 03/04/05/10.
+13. [ ] **Deferred until the pilot (14) reports.** [`13-ci-is-the-authority.md`](tasks/13-ci-is-the-authority.md) — CI is the gate, so it cannot be opt-in: flip `--install-hooks` to default-on with an opt-out, define what the workflow actually runs and how it fails, and declare the check in whatever single manifest `create-project-system` `28` and the `mail` effort settle on. The pre-commit hook is bypassable with `--no-verify`, so it can only ever be the warning. Builds on 03/04/06.
+14. [ ] [`14-pilot-install.md`](tasks/14-pilot-install.md) — install the toolkit into one real repo and act on what it reports. **Next.** The target repo is not chosen yet.
 
 Mark a task `[x]` here when its task file's checklist is fully done.
 
 ## Where this stands
 
-Tasks 01–06 are built: the toolkit installs, measures, lints, and gates. What is
-not yet done is everything that proves it holds up — the disposable self-test
-(07), the deliberately bloated fixture repos (08), and the assisted
-reorganization that turns a report into a diff (10).
+Tasks 01–07 are built. The toolkit installs, measures, lints, and gates. The
+self-test (07) proves it in a disposable sandbox. No real repo carries it yet.
 
 The first real reading, from `create-ai-builder`'s `CLAUDE.md`: **6,576 tokens
 loaded every turn**, 542 lines, with a single `### Summary` section at 1,531 of
@@ -85,28 +84,25 @@ the target for task 11.
 
 ## Sequence from here
 
-The numbered list above is the *build* order, and it is no longer the order to
-work in. Three things moved:
+**Decision (user, 2026-11-17): pilot install before more hardening.** The
+numbered list above is the *build* order. It is not the order to work in.
 
-1. ~~**07 — self-test.**~~ Done. It automates the checks that were run by hand
-   to close 06, which is what makes everything after it safe to move quickly on.
-2. **08 → 10 — dirty fixtures, then the assisted split.** Next. 08 gives 10 something
-   to reorganize, and 10 is what turns a report into a diff a person can accept.
-   This pair is the remaining substance of the project.
-3. **11 — rollout.** Gated on 10. The number that justifies it already exists
-   (6,576 tokens); what does not exist is tooling to do the split, and doing
-   ai-builder by hand would prove nothing about the generator.
+1. ~~**07 — self-test.**~~ Done.
+2. **14 — pilot install.** Next. Install the toolkit into one real repo and act
+   on what it reports. The target repo is not chosen yet; that is an open
+   question in the task file.
+3. **Deferred until the pilot reports:** task 02's calibration run and tasks
+   08–13. Their content is unchanged. After the pilot, review each one against
+   the pilot results, then start, change, or drop it.
 
-Two adjustments to the list itself:
+Notes that still hold for the deferred tasks:
 
 - **09 is roughly half done.** `tests/run.sh` already covers the emitted-tree
   fixtures, drift detection, the pinned `heuristic` counter, and the refresh
   procedure. What remains is golden **report** fixtures (`--json`), which need
-  task 08's dirty repos to exist. 09 is now a step of 08, not a task beside it.
-- **13 has a lead time and should start in parallel, not in order.** It requires
-  agreeing the `discovery.json` filename and merge rule with
-  `create-project-system` task 28 *before either writes code* — that is a
-  conversation in another repo, and it blocks 13 regardless of what gets built
-  here. 13 also has two decisions already made under it during task 06 (the hook
-  is pinned to an offline counter; `lint.warn_only` ships true) which it should
-  ratify or overturn rather than rediscover.
+  task 08's dirty repos to exist. 09 is a step of 08, not a task beside it.
+- **13 has a lead time.** The `discovery.json` merge rule is now settled at the
+  workspace (task `229ccb-0000` in `dev-workspace`); see task 13. 13 also has
+  two decisions made under it during task 06 (the hook is pinned to an offline
+  counter; `lint.warn_only` ships true). It should ratify or overturn them
+  rather than rediscover them.

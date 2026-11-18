@@ -88,8 +88,13 @@ budget = 1500
 
 ### 2.4 Enforcement surfaces
 
-- **pre-commit** (offline counter): budget + lint on staged always-on files;
+- **pre-commit** (offline counter): budget + lint on the always-on files;
   bypassable (`--no-verify`), so it's the fast local guard, not the authority.
+  **Known limitation:** the hook checks the **working tree**, not the staged
+  content. After a partial `git add -p`, it can pass or fail on content that is
+  not in the commit. CI checks the committed content, so CI still holds the
+  line. Materializing the index into a temp directory (`git checkout-index`)
+  was considered and rejected: too complex for the value.
 - **CI** (may use `anthropic` counter): same checks, authoritative, cannot be
   skipped. This is what actually holds the line.
 
@@ -190,6 +195,13 @@ standard library only:
 Zero-dependency matters more than it looks: the pre-commit hook must work on a
 fresh clone with no install step, or it is not a guard.
 
+### 7.2 Template rendering is in Python, on purpose
+
+`check_budget.py --init` reads `src/config/.context-budget.toml.in` and
+substitutes its placeholders itself. `generate.sh` does not render that file.
+An earlier design rendered it in `generate.sh` and then re-seeded it from the
+target's counts. That gave two substitution sites for one file. Keep one.
+
 **`generate.sh` contract (proposed):**
 
 ```sh
@@ -217,3 +229,18 @@ hooks + audit skill.
   sections and the budget totals match expectation. These are the "sandboxed test
   repos the generator cleans and organizes."
 - **Golden test** — fixed inputs → fixed report/diff; catches drift.
+
+---
+
+## References — design provenance
+
+Two second-brain notes shaped this design:
+
+- `resources/agent-instruction-placement.md` — the size-versus-placement split
+  (§1), the three placement buckets (§4), and the rule that CI, not the hook,
+  is the gate (§2.4).
+- `resources/cookiecutter-pattern.md` — the machinery-versus-content split in
+  `generate.sh`'s collision policy, zero-diff regeneration as the property to
+  test directly (§8), "vendor the copy when an agent or human reads it" (the
+  vendored checkers), and the two-placeholder-namespace trap (`generate.sh`
+  header).
