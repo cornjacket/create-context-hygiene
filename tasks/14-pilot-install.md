@@ -18,14 +18,17 @@ items are deferred until the pilot reports:
 The deferred tasks keep their content. After the pilot, review each one against
 what the pilot found, and then start, change, or drop it.
 
-## Open question
+## Pilot target
 
-- **Which repo is the pilot target?** Not chosen yet. The user decides. Do not
-  start the install until the target is named.
+**Decision (user, 2026-11-17):** the pilot target is the git-workspace wrapper,
+`/Users/david/src/github.com/cornjacket/dev-workspace`.
+
+Reason: its `CLAUDE.md` is long and grows with each leader rule. Every leader
+turn pays for it.
 
 ## Steps
 
-- [ ] Get the pilot target from the user.
+- [x] Get the pilot target from the user: `dev-workspace`.
 - [ ] Run `generate.sh --target-repo <target>` with the flags the user agrees
       to. Record the command and the flags in this file.
 - [ ] Record the first `check_budget` report and the lint findings.

@@ -68,7 +68,7 @@ hook, and `.github/workflows/context-hygiene.yml`.
 11. [ ] **Deferred until the pilot (14) reports.** [`11-rollout-real-targets.md`](tasks/11-rollout-real-targets.md) — install into ai-builder, second-brain, captains-log (later).
 12. [ ] **Deferred until the pilot (14) reports.** [`12-claude-md-first-and-skill-handoff.md`](tasks/12-claude-md-first-and-skill-handoff.md) — CLAUDE.md as the priority target + handoff to create-project-system's task-system skill. Builds on 03/04/05/10.
 13. [ ] **Deferred until the pilot (14) reports.** [`13-ci-is-the-authority.md`](tasks/13-ci-is-the-authority.md) — CI is the gate, so it cannot be opt-in: flip `--install-hooks` to default-on with an opt-out, define what the workflow actually runs and how it fails, and declare the check in whatever single manifest `create-project-system` `28` and the `mail` effort settle on. The pre-commit hook is bypassable with `--no-verify`, so it can only ever be the warning. Builds on 03/04/06.
-14. [ ] [`14-pilot-install.md`](tasks/14-pilot-install.md) — install the toolkit into one real repo and act on what it reports. **Next.** The target repo is not chosen yet.
+14. [ ] [`14-pilot-install.md`](tasks/14-pilot-install.md) — install the toolkit into one real repo and act on what it reports. **Next.** Target: the `dev-workspace` wrapper.
 
 Mark a task `[x]` here when its task file's checklist is fully done.
 
@@ -89,8 +89,8 @@ numbered list above is the *build* order. It is not the order to work in.
 
 1. ~~**07 — self-test.**~~ Done.
 2. **14 — pilot install.** Next. Install the toolkit into one real repo and act
-   on what it reports. The target repo is not chosen yet; that is an open
-   question in the task file.
+   on what it reports. Target (user, 2026-11-17): the `dev-workspace` wrapper,
+   whose `CLAUDE.md` every leader turn pays for.
 3. **Deferred until the pilot reports:** task 02's calibration run and tasks
    08–13. Their content is unchanged. After the pilot, review each one against
    the pilot results, then start, change, or drop it.
