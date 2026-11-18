@@ -139,6 +139,8 @@ Record "no read-only mode" as a toolkit problem from this pilot. A
 
 ### Phase A — read-only pass (no writes in `dev-workspace`)
 
+**Status:** done 2026-11-17, user-approved. Results below, in "Phase A results".
+
 1. Make a scratch directory outside `dev-workspace`, for example
    `$(mktemp -d)`.
 2. Copy `dev-workspace/CLAUDE.md` into it.
@@ -185,6 +187,89 @@ Only after Phase B lands and the user approves the flags:
 7. Review tasks 02 and 08–13 against these results. Update `PLAN.md` with the
    new sequence.
 
+## Phase A results (2026-11-17)
+
+**Summary:** the file is 2,639 tokens. The user's leader rules are 63% of it.
+All five lint findings are in the leader rules. The two managed blocks have
+no findings.
+
+**Run.** Scratch copy of `dev-workspace/CLAUDE.md` in a `mktemp -d`
+directory. The copy matched the original byte for byte (`cmp`). Counter:
+`heuristic` (about ±15%). `check_budget.py --init`, then `check_budget.py
+--all-sections` and `context_lint.py --warn-only`, both also with `--json`.
+`git -C dev-workspace status --short` was empty before and after.
+
+### Budget results
+
+The seeded manifest is `budget = 3300`, `max_section = 900`,
+`total_ceiling = 3500`. Every check passes: file 80% of its budget, total 75%
+of the ceiling, largest section 76%. **These passes mean nothing.** `--init`
+seeds budgets from today's counts plus 25% headroom, so today always passes.
+A real budget needs a target number from the user (see decisions).
+
+Against the toolkit defaults (`total_ceiling = 6000`, `max_section = 800`),
+the file is 44% of the total. The `Workspace machinery` section (680 tokens)
+is 85% of the section limit, which is a **warn**.
+
+### Tokens per ownership zone
+
+| Zone | Lines | Tokens | Share |
+|---|---|---|---|
+| User header | 1–6 | 68 | 3% |
+| `git-workspace` managed block | 7–55 | 705 | 27% |
+| `task-system` managed block | 57–71 | 207 | 8% |
+| User leader rules | 72–195 | 1,659 | 63% |
+
+Zone counts come from slicing the file at the markers. The checker's own
+section counts do not line up with zones: its `# CLAUDE.md — dev-workspace`
+section (84 tokens, lines 1–8) includes the `git-workspace:begin` marker.
+
+### Findings by owner
+
+**User — header and leader rules (1,727 tokens)**
+
+| Section | Line | Tokens | Finding | Act on it? |
+|---|---|---|---|---|
+| `### 1. The leader does not change child repos` | 89 | 341 | `code-block` → skill or reference | **Yes.** The `claudeMdExcludes` JSON is one-time setup. Lines 98–99 (how to start the leader) are setup too, though not flagged. Move both to a reference doc and leave a one-line pointer. |
+| `### 2. A child session does the work` | 107 | 370 | `code-block` → skill or reference | **Maybe.** The leader needs this command every time it starts a child. Move it only with rules 2–4 together (see below). |
+| `### 3. Every brief stands alone` | 130 | 163 | `step-sequence` → skill | **Maybe.** It is a format for a brief, not a procedure. Same group as rule 2. |
+| `### 4. The child reports in a fixed block` | 143 | 134 | `code-block` → skill or reference | **Maybe.** It is a template the leader pastes into each brief. Same group as rule 2. |
+| `### 9. Migration intake (one time)` | 187 | 192 | `step-sequence` → skill | **Yes.** It says "one time". Move it to a skill or reference doc now, or delete it once the migration is done. |
+
+Rules 2–4 together are 667 tokens and are needed only when the leader writes a
+brief. A `leader-dispatch` skill would hold them. The cost: the leader must
+load the skill on most turns. Decide this after the two clear moves.
+
+The whole leader-rules section loads for **every** session rooted at
+`dev-workspace`, not only the leader. Its heading says "interim — until
+`create-git-workspace` `proposals`/`dispatch` ship". So the longer-term home
+for most of it is `create-git-workspace`, not this file.
+
+**`git-workspace` managed block (705 tokens) → `create-git-workspace`**
+
+No lint findings. Nothing worth acting on now. The block's own comment says it
+is a kernel and points procedure to the `workspace-status` skill. Its one
+section is 85% of the default section limit; record that as something for
+`create-git-workspace` to watch, not to fix.
+
+**`task-system` managed block (207 tokens) → `create-project-system`**
+
+No lint findings. Nothing to act on.
+
+### Problems in the toolkit that Phase A showed
+
+- **No read-only mode** (already recorded). The scratch-copy route worked. It
+  is complete only because `CLAUDE.md` has no `@`-imports.
+- **No managed-block attribution** (already recorded). Zone counts needed a
+  separate script. Section boundaries do not line up with the markers.
+- **Seeded budgets cannot judge size.** On a first run, `--init` makes every
+  file pass. The pilot needs a target number that comes from somewhere else.
+- **`code-block` cannot tell a template or contract from how-to.** Line 143 is
+  a report format that the leader must paste in full. The rule flags it the
+  same way as a setup snippet.
+- **Long section paths in lint output.** Each finding repeats the full
+  heading chain, including the 90-character leader-rules heading.
+
 ## Decisions the user must make before the install (Phase C)
 
 1. **Hooks.** `dev-workspace` already has a `pre-commit` hook owned by
@@ -207,6 +292,10 @@ Only after Phase B lands and the user approves the flags:
 5. **Budgets for managed zones.** The seeded total covers all three zones. The
    user owns only one. Decide if the pilot budgets the whole file (and routes
    the managed-zone overage to its owners) or waits for per-block budgets.
+6. **Target budget.** Phase A showed seeded budgets pass by construction.
+   Pick a target total for `CLAUDE.md` (for example, the 1,727 user tokens
+   minus the two clear moves, about 1,300), or keep the seeded numbers as a
+   ratchet that only goes down.
 
 ## Done when
 
