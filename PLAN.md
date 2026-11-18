@@ -68,7 +68,7 @@ hook, and `.github/workflows/context-hygiene.yml`.
 11. [ ] **Deferred until the pilot (14) reports.** [`11-rollout-real-targets.md`](tasks/11-rollout-real-targets.md) — install into ai-builder, second-brain, captains-log (later).
 12. [ ] **Deferred until the pilot (14) reports.** [`12-claude-md-first-and-skill-handoff.md`](tasks/12-claude-md-first-and-skill-handoff.md) — CLAUDE.md as the priority target + handoff to create-project-system's task-system skill. Builds on 03/04/05/10.
 13. [ ] **Deferred until the pilot (14) reports.** [`13-ci-is-the-authority.md`](tasks/13-ci-is-the-authority.md) — CI is the gate, so it cannot be opt-in: flip `--install-hooks` to default-on with an opt-out, define what the workflow actually runs and how it fails, and declare the check in whatever single manifest `create-project-system` `28` and the `mail` effort settle on. The pre-commit hook is bypassable with `--no-verify`, so it can only ever be the warning. Builds on 03/04/06.
-14. [ ] [`14-pilot-install.md`](tasks/14-pilot-install.md) — install the toolkit into one real repo and act on what it reports. **Next.** Target: the `dev-workspace` wrapper.
+14. [ ] [`14-pilot-install.md`](tasks/14-pilot-install.md) — install the toolkit into one real repo and act on what it reports. Target: the `dev-workspace` wrapper. **Open, nothing active:** Phase A (read-only pass) done; the install is parked until `create-git-workspace` has room.
 
 Mark a task `[x]` here when its task file's checklist is fully done.
 
@@ -84,16 +84,40 @@ the target for task 11.
 
 ## Sequence from here
 
+**Nothing in this repo is active now** (user, 2026-11-17).
+
 **Decision (user, 2026-11-17): pilot install before more hardening.** The
 numbered list above is the *build* order. It is not the order to work in.
 
 1. ~~**07 — self-test.**~~ Done.
-2. **14 — pilot install.** Next. Install the toolkit into one real repo and act
-   on what it reports. Target (user, 2026-11-17): the `dev-workspace` wrapper,
-   whose `CLAUDE.md` every leader turn pays for.
+2. **14 — pilot install into `dev-workspace`.** Open, not active.
+   - **Phase A, the read-only pass: done.** `CLAUDE.md` measured 2,639
+     tokens; 63% is the user's leader rules, and all five lint findings are
+     there. The user moved rule 1's one-time setup out (`dev-workspace`
+     `ce03001`), will delete rule 9 when the migration intake finishes, and
+     kept rules 2–4.
+   - **Phase C, the install: parked** until `create-git-workspace` has room
+     after its dispatch effort. It needs a `.gitignore` and hook change there
+     first (Phase B). Six install questions stay open in the task file.
 3. **Deferred until the pilot reports:** task 02's calibration run and tasks
-   08–13. Their content is unchanged. After the pilot, review each one against
-   the pilot results, then start, change, or drop it.
+   08–13. Their content is unchanged. The pilot has reported only Phase A, so
+   they stay deferred.
+
+### Toolkit problems the pilot found
+
+Phase A found five problems in the toolkit itself. Details are in task 14,
+"Problems in the toolkit that Phase A showed".
+
+| Problem | Candidate task? |
+|---|---|
+| **No read-only mode.** The checkers read their manifest only from `<root>/.context-budget.toml`. A pilot must copy the file to a scratch directory. | **Yes.** A `--config <path>` flag. Small, and it makes a first pass possible on any repo without writing to it. |
+| **No managed-block attribution.** Findings and counts are by heading. They do not say which generator's marker block they fall in. | **Yes.** Report tokens and findings per marker block (`<name>:begin` / `<name>:end`). Every repo set up by `create-git-workspace` or `create-project-system` has these blocks. |
+| **Seeded budgets pass by construction.** `--init` sets budgets at today's size plus 25%, so a first run always passes and says nothing about size. | **Yes.** For example, report the seeded numbers against the design defaults, or take a target total at `--init`. |
+| **`code-block` cannot tell a template from how-to.** A report format the agent must paste in full gets the same finding as a setup snippet. | No. Fold it into the rule tuning in task 08. |
+| **Long section paths in lint output.** Each finding repeats the full heading chain. | No. A small output fix; do it with any lint change. |
+
+The candidate tasks are not created. If one starts, it becomes the active work
+in this repo. It does not depend on the parked install.
 
 Notes that still hold for the deferred tasks:
 

@@ -3,6 +3,17 @@
 **Goal:** install the toolkit into one real repo, and act on what it reports.
 This task comes before any more hardening work.
 
+## Status (2026-11-17)
+
+**Open. Nothing active.**
+
+- **Phase A (read-only pass): done.** See "Phase A results" and "Phase A
+  outcome".
+- **Phase B and Phase C (the install): parked** by the user until
+  `create-git-workspace` has room after its dispatch effort. Phase C needs
+  Phase B, and Phase B is work in `create-git-workspace`. The six install
+  questions under "Decisions the user must make" stay open.
+
 ## Why
 
 Tasks 01–07 built the toolkit and proved it in a disposable sandbox. No real
@@ -160,6 +171,8 @@ Record "no read-only mode" as a toolkit problem from this pilot. A
 
 ### Phase B — change in `create-git-workspace` (prerequisite for an install)
 
+**Status:** parked (user, 2026-11-17), with Phase C.
+
 Work in `create-git-workspace`, by a child session for that repo, not by this
 task:
 
@@ -171,6 +184,9 @@ task:
 3. Run its `update.sh` against `dev-workspace` and commit there.
 
 ### Phase C — install into `dev-workspace`
+
+**Status:** parked (user, 2026-11-17) until `create-git-workspace` has room
+after its dispatch effort. The six questions below stay open.
 
 Only after Phase B lands and the user approves the flags:
 
@@ -270,7 +286,18 @@ No lint findings. Nothing to act on.
 - **Long section paths in lint output.** Each finding repeats the full
   heading chain, including the 90-character leader-rules heading.
 
+## Phase A outcome — user decisions (2026-11-17)
+
+| Finding | Decision | Result |
+|---|---|---|
+| Rule 1 setup (lines 84–99) | Move it | Done in `dev-workspace` commit `ce03001`. The setup now lives in `.workspace/leader-setup.md`; rule 1 keeps a one-line pointer. |
+| Rule 9, migration intake | Delete it | Deleted in `dev-workspace` when the current migration intake finishes. Not done yet. |
+| Rules 2–4 (brief, command, report block) | Keep them | They stay in `CLAUDE.md`. No `leader-dispatch` skill. |
+| Managed blocks | No action | No findings. |
+
 ## Decisions the user must make before the install (Phase C)
+
+**Status:** open. Parked with Phase C (user, 2026-11-17).
 
 1. **Hooks.** `dev-workspace` already has a `pre-commit` hook owned by
    `create-git-workspace`. `generate.sh --install-hooks` will skip it and
